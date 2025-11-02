@@ -36,13 +36,10 @@ const DASH_TIME = 0.6
 
 
 
-
-@export var wall_x_force = 2100.0
-@export var wall_y_force = -220.0
-var is_wall_jumping = false
+var is_wall_jumping := false
 var wall_jump_lock_time = 0.2
 var wall_jump_timer = 0.0
-var is_wall_sliding = false
+var is_wall_sliding := false
 
 var is_attacking := false
 var is_dashing := false
@@ -65,16 +62,17 @@ func _ready():
 func _physics_process(delta):
 	if hp <= 0:
 		return
+		
 	if wall_jump_timer > 0:
 		wall_jump_timer -= delta
-
-	handle_input(delta)
-	jump_logic()
-	
-
-	velocity.y += GRAVITY * delta
+	update_flip()
 	wall_jump_logic()
-	wall_slide_logic()
+	jump_logic()
+	velocity.y += GRAVITY * delta
+	if wall_jump_timer <= 0:
+		wall_slide_logic()
+	if wall_jump_timer <= 0:
+		handle_input(delta)
 	move_and_slide()
 	
 	# Resetta i salti solo se sei a terra
@@ -88,11 +86,19 @@ func _physics_process(delta):
 # ----------------------------
 # === INPUT ===
 # ----------------------------
+func update_flip():
+	if velocity.x > 0: 
+		scale.x = scale.y * 1 
+		facing_dir = 1 
+	if velocity.x < 0: 
+		scale.x = scale.y * -1 
+		facing_dir = -1
+
 func handle_input(delta):
 	var input_dir = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 
 	# Movimento orizzontale
-	if not is_attacking and not is_dashing:
+	if  not is_dashing:
 		if Input.is_action_pressed("sneak"):
 			velocity.x = input_dir * SNEAK_SPEED
 		elif Input.is_action_pressed("run"):
@@ -100,13 +106,6 @@ func handle_input(delta):
 		else:
 			velocity.x = input_dir * WALK_SPEED
 
-		# Flip tramite scale
-		if velocity.x > 0:
-			scale.x = scale.y * 1
-			facing_dir = 1
-		if velocity.x < 0:
-			scale.x = scale.y * -1
-			facing_dir = -1
 
 		# Attacchi e dash
 		if Input.is_action_just_pressed("attack"):
@@ -130,26 +129,26 @@ func jump_logic():
 		velocity.y *= 0.3
 		
 func wall_jump_logic():
+	if is_on_floor():
+		return
+
+	var left_wall = left_rayt.is_colliding() or left_rayb.is_colliding()
+	var right_wall = right_rayt.is_colliding() or right_rayb.is_colliding()
+	var on_wall = left_wall or right_wall
+
 	
-	if not is_on_floor():
-		var left_wall = left_rayt.is_colliding() or left_rayb.is_colliding()
-		var right_wall = right_rayt.is_colliding() or right_rayb.is_colliding()
+	if on_wall and Input.is_action_just_pressed("jump"):
+		velocity.x = (140 * -facing_dir)
+		velocity.y = -200
 
-		if Input.is_action_just_pressed("jump"):
-			var wall_dir = 0
-			if left_wall:
-				wall_dir = 1  # salta verso destra
-			elif right_wall:
-				wall_dir = -1 # salta verso sinistra
+		is_wall_jumping = false
+		wall_jump_timer = wall_jump_lock_time
 
-			if wall_dir != 0:
-				velocity.x = wall_x_force * -facing_dir
-				velocity.y = wall_y_force
-				is_wall_sliding = false
-				wall_jump_timer = wall_jump_lock_time
 
-			
 func wall_slide_logic():
+	
+	if wall_jump_timer > 0:
+		return  
 	is_wall_sliding = false
 
 	if is_on_floor() or velocity.y <= 0:
@@ -170,12 +169,7 @@ func wall_slide_logic():
 
 		
 
-func apply_gravity(delta):
-	if not is_on_floor():
-		velocity.y += GRAVITY * delta
-	else:
-		velocity.y = 0
-		MAX_JUMPS = 2
+
 		
 
 
@@ -231,8 +225,7 @@ func dash():
 	await get_tree().create_timer(DASH_TIME).timeout
 
 	# Fine dash, ripristina movimento
-	is_dashing = false
-	velocity.x = 0  # oppure lascia che handle_input gestisca di nuovo
+	is_dashing = false# oppure lascia che handle_input gestisca di nuovo
 	GRAVITY = original_gravity
 
 	# --- Gestione salto / caduta ---
