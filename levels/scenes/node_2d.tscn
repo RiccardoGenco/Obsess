@@ -1,0 +1,79 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxgiva2ixrkfu"]
+
+[ext_resource type="Texture2D" uid="uid://d4byp47fbdbiw" path="res://assets/loading_screen.png" id="1_bac4y"]
+
+[sub_resource type="GDScript" id="GDScript_ptkj4"]
+script/source = "extends VBoxContainer
+
+# Percorso della scena da caricare
+const FIRST_LEVEL_PATH := \"res://level_test.tscn\"
+
+func _ready() -> void:
+
+    # Collego i pulsanti (assicurati che si chiamino esattamente \"Start\" e \"Quit\")
+    if has_node(\"Start\"):
+        $Start.pressed.connect(_on_Start_pressed)
+    if has_node(\"Quit\"):
+        $Quit.pressed.connect(_on_Quit_pressed)
+
+func _process(delta: float) -> void:
+    # Controllo input controller
+    if Input.is_action_just_pressed(\"ui_accept\"):
+        _on_Start_pressed()
+    if Input.is_action_just_pressed(\"ui_cancel\"):
+        _on_Quit_pressed()
+
+# ----------------------------
+# Funzioni dei pulsanti
+# ----------------------------
+func _on_Start_pressed() -> void:
+    if ResourceLoader.exists(FIRST_LEVEL_PATH):
+        get_tree().change_scene(FIRST_LEVEL_PATH)
+    else:
+        push_error(\"Percorso livello non trovato: \" + FIRST_LEVEL_PATH)
+
+func _on_Quit_pressed() -> void:
+    get_tree().quit()
+"
+
+[node name="Node2D" type="Node2D"]
+
+[node name="MainMenu" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="MainMenu"]
+layout_direction = 2
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1080.0
+offset_bottom = 1080.0
+scale = Vector2(1.03194, 1.03194)
+texture = ExtResource("1_bac4y")
+stretch_mode = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu"]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+theme_override_constants/separation = 146
+alignment = 1
+script = SubResource("GDScript_ptkj4")
+
+[node name="start" type="Button" parent="MainMenu/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 37
+text = "Start Game"
+
+[node name="quit" type="Button" parent="MainMenu/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 37
+text = "Quit Game"
