@@ -703,6 +703,7 @@ animations = [{
 size = Vector2(14.5, 23)
 
 [node name="player" type="CharacterBody2D"]
+collision_mask = 2
 safe_margin = 0.18
 script = ExtResource("1_j3ope")
 
@@ -718,9 +719,6 @@ root_node = NodePath("../AnimatedSprite2D")
 position = Vector2(0.75, 1)
 shape = SubResource("RectangleShape2D_gnjsj")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(3, 3)
-
 [node name="raycast_top" type="Node2D" parent="."]
 position = Vector2(0, -4)
 
@@ -731,7 +729,7 @@ target_position = Vector2(-10, 0)
 target_position = Vector2(10, 0)
 
 [node name="raycast_bot" type="Node2D" parent="."]
-position = Vector2(0, -4)
+position = Vector2(0, 5)
 
 [node name="left_rayb" type="RayCast2D" parent="raycast_bot"]
 target_position = Vector2(-10, 0)

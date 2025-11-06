@@ -4,7 +4,8 @@ extends CharacterBody2D
 # === NODI RIFERIMENTO ===
 # ----------------------------
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
-@onready var camera: Camera2D = $Camera2D
+
+
 
 # ----------------------------
 # === COSTANTI MOVIMENTO ===
@@ -54,7 +55,8 @@ var facing_dir = 1  # 1 = destra, -1 = sinistra
 # ----------------------------
 func _ready():
 	appear()
-	camera.make_current()
+
+
 
 # ----------------------------
 # === LOOP FISICA ===
@@ -181,7 +183,7 @@ func update_animation():
 		anim.play("dissolve")
 		return
 		
-	if is_wall_sliding:
+	if is_on_wall_only():
 		anim.play("wall_slide")
 		return
 		

@@ -3,17 +3,38 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "testmappa.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
+        "background.tsx": {
+            "scaleInDock": 1
+        },
+        "columns.tsx": {
+            "scaleInDock": 1
+        },
+        "testmappa.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 480,
+                "y": 379.75
+            }
+        },
+        "tileset.tsx": {
+            "scaleInDock": 1
+        }
     },
-    "last.exportedFilePath": "C:/Users/genco/Documents/renekton-story/scenes",
-    "map.lastUsedExportFilter": "File Mappa Tiled (*.tmx *.xml)",
+    "last.exportedFilePath": "C:/Users/genco/Documents/renekton-story/assets",
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
     "openFiles": [
+        "testmappa.tmx"
     ],
     "project": "map_lvl1.tiled-project",
     "recentFiles": [
+        "testmappa.tmx"
     ],
     "tileset.lastUsedFormat": "tsx"
 }
